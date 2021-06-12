@@ -7,10 +7,10 @@ class LancamentoWidget extends StatelessWidget {
   final VoidCallback onClicked;
 
   const LancamentoWidget({
-    @required this.lancamento,
-    @required this.animation,
-    @required this.onClicked,
-    Key key,
+    required this.lancamento,
+    required this.animation,
+    required this.onClicked,
+    Key? key,
   }) : super(key: key);
 
   @override
