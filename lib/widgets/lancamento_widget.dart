@@ -15,7 +15,7 @@ class LancamentoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.all(8),
+    margin: EdgeInsets.all(3),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(12),
       color: Colors.white
