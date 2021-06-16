@@ -47,6 +47,8 @@ class _MyAppState extends State<MyApp> {
     futureLancamento = fetchLancamento();
   }
 
+  int _tabIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -68,9 +70,8 @@ class _MyAppState extends State<MyApp> {
                 return Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(20),
                       child: Container(
-                        padding: EdgeInsets.all(30),
+                        padding: EdgeInsets.all(60),
                         child: Text(
                           'R\$' + total.toString(),
                           style: TextStyle(
@@ -86,12 +87,8 @@ class _MyAppState extends State<MyApp> {
                           initialItemCount: listData.length,
                           itemBuilder: (context, index, animation) =>
                           buildItem(listData[index], index, animation),
-                          )
+                        )
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: buildInsertButton(),
-                    )
                   ],
                 );
               } else if (snapshot.hasError) {
@@ -100,6 +97,29 @@ class _MyAppState extends State<MyApp> {
               return CircularProgressIndicator();
             },
           ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _tabIndex,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              label: "Adicionar",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.filter_alt_sharp),
+              label: "Filtrar"
+            ),
+          ],
+          onTap: (index){
+            setState(() {
+              _tabIndex = index;
+            });
+          },
+          fixedColor: Colors.green,
         ),
       ),
     );
@@ -111,11 +131,15 @@ class _MyAppState extends State<MyApp> {
   Widget buildInsertButton() =>
       ElevatedButton(
           child: Text(
-            'Insert item',
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            'Novo',
+            style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+            ),
           ),
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.white)
+            backgroundColor: MaterialStateProperty.all(Colors.green)
           ),
           onPressed: (){}
       );
