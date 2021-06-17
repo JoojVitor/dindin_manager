@@ -4,7 +4,7 @@ class Lancamento{
   final int Codigo;
   final bool ehCredito;
   final String Nome;
-  final int Preco;
+  final double Preco;
 
   Lancamento({
     required this.Codigo,
@@ -15,10 +15,10 @@ class Lancamento{
 
   factory Lancamento.fromJson(Map<String, dynamic> json){
     return Lancamento(
-        Codigo: json['userId'],
-        ehCredito: json['completed'],
-        Nome: json['title'],
-        Preco: json['id']
+        Codigo: int.parse(json['id']),
+        ehCredito: json['ehCredito'] == "true",
+        Nome: json['descricao'],
+        Preco: double.parse(json['preco'])
     );
   }
 }
