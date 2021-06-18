@@ -46,7 +46,21 @@ class LancamentoWidget extends StatelessWidget {
               color: lancamento.ehCredito
                   ? Colors.green
                   : Colors.red
-          ))
+          )),
+          PopupMenuButton(
+            itemBuilder: (context){
+              return [
+                PopupMenuItem(
+                  value: "Alterar",
+                  child: Text("Alterar"),
+                ),
+                PopupMenuItem(
+                  value: "Excluir",
+                  child: Text("Excluir"),
+                )
+              ];
+            },
+          )
         ],
       ),
     ),

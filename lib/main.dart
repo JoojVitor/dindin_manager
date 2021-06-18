@@ -40,6 +40,10 @@ class MyApp extends StatefulWidget {
   }
 }*/
 
+class item{
+  var items = 0;
+}
+
 class _MyAppState extends State<MyApp> {
   late Future<List<Lancamento>> futureLancamento;
   final key = GlobalKey<AnimatedListState>();
@@ -95,6 +99,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var listData = snapshot.data as List;
+            item().items = listData.length;
             var formatter = NumberFormat("00.00");
             var total = listData.map((item) => item.Preco)
                 .reduce((a, b) => a + b);
@@ -151,12 +156,19 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget buildItem(data, int index, Animation<double> animation) =>
-    LancamentoWidget(
-      lancamento: data,
-      animation: animation,
-      onClicked: () => removeItem(index.toString())
+  static const opcoes = [
+    "Alterar",
+    "Excluir"
+  ];
+
+  Widget buildItem(data, int index, Animation<double> animation) {
+    return LancamentoWidget(
+        lancamento: data,
+        animation: animation,
+        onClicked: () {
+        }
     );
+  }
 
   Future<http.Response> removeItem(String id) async {
     final http.Response response = await http.delete(
@@ -165,7 +177,7 @@ class _MyAppState extends State<MyApp> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
+    MyApp();
     return response;
   }
 

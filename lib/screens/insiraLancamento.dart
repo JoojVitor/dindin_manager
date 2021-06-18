@@ -35,10 +35,10 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
   }
 
   generateID() async{
-    late Future<List<Lancamento>> futureLancamento;
-    futureLancamento = fetchLancamento();
-
-    FutureBuilder<List<Lancamento>>(
+    //late Future<List<Lancamento>> futureLancamento;
+    //futureLancamento = fetchLancamento();
+    codigo = item().items;
+    /*FutureBuilder<List<Lancamento>>(
       future: futureLancamento,
       builder: (context, snapshot){
         if (snapshot.hasData){
@@ -47,7 +47,7 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
         }
         return CircularProgressIndicator();
       }
-    );
+    );*/
   }
 
   @override
