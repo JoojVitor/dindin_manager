@@ -1,20 +1,22 @@
-import 'dart:ui';
-
 import 'package:dindin_manager/main.dart';
-import 'package:dindin_manager/model/lancamento.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import '../lancamento_services.dart';
 
-class InsiraLancamento extends StatefulWidget{
+class InsiraLancamento extends StatefulWidget {
+  final id;
+
+  InsiraLancamento({this.id});
+
   @override
   State<StatefulWidget> createState() {
     return InsiraLancamentoState();
   }
 }
 
-enum CreditoDebito {credito, debito}
+enum CreditoDebito { credito, debito }
 
-class InsiraLancamentoState extends State<InsiraLancamento>{
+class InsiraLancamentoState extends State<InsiraLancamento> {
+  bool get ehEdicao => widget.id != null;
   var formKey = GlobalKey<FormState>();
   var nome = TextEditingController();
   var preco = TextEditingController();
@@ -22,33 +24,7 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
 
   CreditoDebito? _opcao = CreditoDebito.credito;
 
-  insert() async{
-    generateID();
-    var response = await http.post(Uri.parse("http://10.0.2.2:3000/Lancamentos"),
-    body: {
-      "id": codigo.toString(),
-      "descricao": nome.text,
-      "preco": preco.text,
-      "ehCredito": (_opcao == CreditoDebito.credito).toString()
-    });
-    return response;
-  }
-
-  generateID() async{
-    //late Future<List<Lancamento>> futureLancamento;
-    //futureLancamento = fetchLancamento();
-    codigo = item().items;
-    /*FutureBuilder<List<Lancamento>>(
-      future: futureLancamento,
-      builder: (context, snapshot){
-        if (snapshot.hasData){
-          var listData = snapshot.data as List;
-          codigo = listData.length + 1;
-        }
-        return CircularProgressIndicator();
-      }
-    );*/
-  }
+  String? formValidation(value) => value == null ? "Preencha este campo" : null;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +65,7 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
                     leading: Radio<CreditoDebito>(
                       value: CreditoDebito.credito,
                       groupValue: _opcao,
-                      onChanged: (CreditoDebito? value){
+                      onChanged: (CreditoDebito? value) {
                         setState(() {
                           _opcao = value;
                         });
@@ -101,7 +77,7 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
                     leading: Radio<CreditoDebito>(
                       value: CreditoDebito.debito,
                       groupValue: _opcao,
-                      onChanged: (CreditoDebito? value){
+                      onChanged: (CreditoDebito? value) {
                         setState(() {
                           _opcao = value;
                         });
@@ -109,15 +85,16 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
                     ),
                   ),
                   ElevatedButton(
-                    child: Text("Concluído"),
-                    onPressed: (){
-                      insert();
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => MyApp()
-                          )
-                        );
-                    }
-                  ),
+                      child: Text("Concluído"),
+                      onPressed: () {
+                        if(ehEdicao){
+                          LancamentoServices().updateItem(widget.id, nome.text, preco.text, _opcao);
+                        }else{
+                          LancamentoServices().insert(nome.text, preco.text, _opcao);
+                        }
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => MyApp()));
+                      }),
                 ],
               ),
             )
@@ -126,9 +103,4 @@ class InsiraLancamentoState extends State<InsiraLancamento>{
       ),
     );
   }
-
-  String? formValidation(value) =>
-    value == null
-        ? "Preencha este campo"
-        : null;
 }

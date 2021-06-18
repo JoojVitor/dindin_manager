@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:dindin_manager/screens/insiraLancamento.dart';
 import 'package:dindin_manager/widgets/lancamento_widget.dart';
 import 'package:flutter/material.dart';
@@ -32,18 +31,6 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-/*class MyHttpOverrides extends HttpOverrides{
-  @override
-  HttpClient createHttpClient(SecurityContext? context){
-    return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
-  }
-}*/
-
-class item{
-  var items = 0;
-}
-
 class _MyAppState extends State<MyApp> {
   late Future<List<Lancamento>> futureLancamento;
   final key = GlobalKey<AnimatedListState>();
@@ -51,12 +38,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    //HttpOverrides.global = new MyHttpOverrides();
     futureLancamento = fetchLancamento();
   }
 
   int _tabIndex = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -99,8 +84,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             var listData = snapshot.data as List;
-            item().items = listData.length;
-            var formatter = NumberFormat("00.00");
+            var formatter = NumberFormat("0.00");
             var total = listData.map((item) => item.Preco)
                 .reduce((a, b) => a + b);
             return Column(
@@ -156,11 +140,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  static const opcoes = [
-    "Alterar",
-    "Excluir"
-  ];
-
   Widget buildItem(data, int index, Animation<double> animation) {
     return LancamentoWidget(
         lancamento: data,
@@ -168,17 +147,6 @@ class _MyAppState extends State<MyApp> {
         onClicked: () {
         }
     );
-  }
-
-  Future<http.Response> removeItem(String id) async {
-    final http.Response response = await http.delete(
-      Uri.parse('http://10.0.2.2:3000/Lancamentos/$id'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-    MyApp();
-    return response;
   }
 
   Widget buildInsertButton() =>
