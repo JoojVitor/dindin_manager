@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dindin_manager/main.dart';
 import 'package:flutter/material.dart';
 import '../lancamento_services.dart';
@@ -88,12 +90,15 @@ class InsiraLancamentoState extends State<InsiraLancamento> {
                       child: Text("Concluído"),
                       onPressed: () {
                         if(ehEdicao){
-                          LancamentoServices().updateItem(widget.id, nome.text, preco.text, _opcao);
+                          LancamentoServices().update(widget.id, nome.text, preco.text, _opcao);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => MyApp()));
                         }else{
                           LancamentoServices().insert(nome.text, preco.text, _opcao);
+                          Timer(Duration(seconds: 1), () =>
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => MyApp())));
                         }
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => MyApp()));
                       }),
                 ],
               ),

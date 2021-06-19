@@ -4,7 +4,26 @@ import 'package:http/http.dart' as http;
 import 'model/lancamento.dart';
 
 class LancamentoServices{
-  removeItem(String id) async {
+
+  Future<List<Lancamento>> fetch(String pesquisa) async {
+    var parametroUrl = pesquisa != ""
+        ? "?descricao=${pesquisa.replaceAll(" ", "%20")}"
+        : "";
+    try{
+      var response = await http.get(Uri.parse("http://10.0.2.2:3000/Lancamentos${parametroUrl}"), headers: {"Accept": "application/json"});
+      if (response.statusCode == 200) {
+        var getData = json.decode(response.body) as List;
+        var futureList = getData.map((e) => Lancamento.fromJson(e)).toList();
+        return futureList;
+      }else{
+        throw Exception('Failed to load album');
+      }
+    }catch(e){
+      throw Exception(e);
+    }
+  }
+
+  remove(String id) async {
     await http.delete(
       Uri.parse('http://10.0.2.2:3000/Lancamentos/$id'),
       headers: <String, String>{
@@ -26,7 +45,7 @@ class LancamentoServices{
     });
   }
 
-  updateItem(String id, String nome, String preco, CreditoDebito? opcao) async {
+  update(String id, String nome, String preco, CreditoDebito? opcao) async {
     await http.put(
         Uri.parse('http://10.0.2.2:3000/Lancamentos/$id'),
         body: {

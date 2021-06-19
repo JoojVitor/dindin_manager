@@ -1,26 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
+import 'package:dindin_manager/lancamento_services.dart';
 import 'package:dindin_manager/screens/insiraLancamento.dart';
 import 'package:dindin_manager/widgets/lancamento_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'model/lancamento.dart';
-
-Future<List<Lancamento>> fetchLancamento() async {
-  try{
-    var response = await http.get(Uri.parse("http://10.0.2.2:3000/Lancamentos"), headers: {"Accept": "application/json"});
-    if (response.statusCode == 200) {
-      var getData = json.decode(response.body) as List;
-      var futureList = getData.map((e) => Lancamento.fromJson(e)).toList();
-      return futureList;
-    }else{
-      throw Exception('Failed to load album');
-    }
-  }catch(e){
-    throw Exception(e);
-  }
-}
 
 void main() => runApp(MyApp());
 
@@ -38,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    futureLancamento = fetchLancamento();
+    futureLancamento = LancamentoServices().fetch("");
   }
 
   int _tabIndex = 0;
@@ -52,6 +36,12 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.green,
       ),
       home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          title: Text("Meus Lançamentos"),
+        ),
         backgroundColor: Colors.green,
         body: [homeWidget(), InsiraLancamento()][_tabIndex],
         bottomNavigationBar: BottomNavigationBar(
@@ -78,6 +68,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget homeWidget(){
+    var nome = TextEditingController();
     return Container(
       child: FutureBuilder<List<Lancamento>>(
         future: futureLancamento,
@@ -100,6 +91,36 @@ class _MyAppState extends State<MyApp> {
                           fontWeight: FontWeight.bold
                       ),
                     ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Wrap(
+                    children: [
+                      TextFormField(
+                        controller: nome,
+                        style: TextStyle(color: Colors.white),
+                        cursorColor: Colors.white,
+                        onChanged: (pesquisa){
+                          futureLancamento = LancamentoServices().fetch(pesquisa);
+                        },
+                        decoration: new InputDecoration(
+                          border: InputBorder.none,
+                            filled: true,
+                            contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                            hintStyle: TextStyle(color: Colors.white),
+                            hintText: "Pesquisar..."),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(top: 15),
+                        child: IconButton(
+                          icon: Icon(Icons.refresh),
+                          color: Colors.white,
+                          onPressed: () => LancamentoServices().fetch(""),
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 Expanded(

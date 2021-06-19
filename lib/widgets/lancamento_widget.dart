@@ -64,7 +64,7 @@ class LancamentoWidget extends StatelessWidget {
                    )
                 ));
               }else{
-                LancamentoServices().removeItem(lancamento.Codigo.toString());
+                LancamentoServices().remove(lancamento.Codigo.toString());
                 Navigator.push(context, MaterialPageRoute(
                     builder: (context) => MyApp()
                   )
